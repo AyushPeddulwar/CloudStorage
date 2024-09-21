@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Cyber Ark</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+
+            <div class="logo">
+                <a href="#"><img src="images/logo--hack.png" alt="Logo"></a>
+            </div>
+            
+            <div class="auth-buttons">
+                <a href="#">Login</a>
+                <a href="#">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="main-content">
+            <div>
+                <h1>Welcome to CyberArk</h1>
+                <p>Your gateway to Save your Files with us...</p>
+            </div>
+            <div class="main-part">
+                <p>For <span class="str">Uploading your Files</span> click the button below to allow File Upload Option</p>
+                <button class="but-click" id="sub">Click Me!</button>
+
+                <div class="file-upload-div hidden" id="file-upload-section">
+                    <div class="upload-container">
+                        <div id="file-drop-area" class="file-drop-area">
+                            <div class="drag-text">
+                                <h1>Upload File</h1>
+                                <input type="file" id="fileInput" class="remove-file"/><br><br>
+                                <button id="uploadBtn">Upload</button>
+                                <div id="message"></div>
+                                <img id="preview" class="hidden" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 by CyberArk. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+
+    <script>
+        // Show file upload section on button click
+        document.getElementById('sub').addEventListener('click', () => {
+            document.getElementById('file-upload-section').classList.toggle('hidden');
+        });
+
+        // Handle file input change to preview the selected image
+        document.getElementById('fileInput').addEventListener('change', function() {
+            const file = this.files[0];
+            const preview = document.getElementById('preview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+                preview.classList.add('hidden');
+            }
+        });
+
+        // Handle file upload
+        document.getElementById('uploadBtn').addEventListener('click', async () => {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('http://localhost:5000/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+        });
+
+        
+    </script>
+</body>
+</html>
